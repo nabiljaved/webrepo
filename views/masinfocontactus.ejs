@@ -1,0 +1,174 @@
+	<%- include('partials/masinfosysheader'); -%>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+    <div class="container mt-5">
+
+
+        <div style="width: 100%"><iframe width="100%" height="600" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=100%25&amp;height=600&amp;hl=en&amp;q=25.2731,55.3479&amp;t=&amp;z=14&amp;ie=UTF8&amp;iwloc=B&amp;output=embed"></iframe>
+            <a
+                href="https://www.maps.ie/route-planner.htm">Journey Planner</a>
+        </div>
+
+        <p class="text-center pt-4 pb-4 h3 heading_style">We are based in KSA, UAE AND INDIA </p>
+
+		<div class="container-fluid" style="background-color: #eeeeee; padding: 50px; margin-bottom: 50px;">
+
+			<div style="text-align: center;margin-bottom: 30px;" >
+				<img src="https://mir-s3-cdn-cf.behance.net/project_modules/max_632/04de2e31234507.564a1d23645bf.gif" style="width: 100px;height:100px; display: none; margin: 0 auto;" class="loading_gif"/>
+				<p style="background-color: green; color: white;display: none" class="success_message"> EMAIL SENT SUCCESSFULLY !</p>
+			</div>
+
+			<form id="form">
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label for="get_name heading_style">Name</label>
+						<input type="text" class="form-control" id="get_name" placeholder="name">
+					</div>
+				  <div class="form-group col-md-6">
+					<label for="get_email heading_style">Email</label>
+					<input type="email" class="form-control" id="get_email" placeholder="Email">
+				  </div>
+				</div>
+				<div class="form-group">
+				  <label for="get_address heading_style">Address</label>
+				  <input type="text" class="form-control" id="get_address" placeholder="1234 Main St">
+				</div>
+				<div class="form-group">
+				  <label for="get_phone heading_style">Phone Number</label>
+				  <input type="text" class="form-control" id="get_phone" placeholder="contact number">
+				</div>
+				<div class="form-row">
+				  <div class="form-group col-md-6">
+					<label for="get_subject heading_style">Subject</label>
+					<input type="text" class="form-control" id="get_subject" placeholder="Subject">
+				  </div>
+				  <div class="form-group col-md-6">
+					<label for="get_message heading_style">Message</label>
+					<textarea class="form-control" rows="5" placeholder="Message " id="get_message" placeholder="message"></textarea>
+				  </div>
+				</div>
+				<button type="submit" class="btn btn-primary" style="margin-top: 20px;">SEND</button>
+			  </form>
+	
+		</div>
+		
+</div>
+
+
+
+		<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+		<script>
+
+
+			var form = document.querySelector('#form');
+			form.addEventListener('submit', addContact);
+			var loading = document.querySelector(".loading_gif");
+			var showMessage = document.querySelector(".success_message");
+		
+
+			function addContact(e)
+			{
+			  e.preventDefault();
+		  
+		  
+			  const name = document.getElementById('get_name').value;
+			  const email = document.getElementById('get_email').value;
+			  const phone = document.getElementById('get_phone').value;
+			  const subject = document.getElementById('get_subject').value;
+			  const message = document.getElementById('get_message').value;
+			  const address = document.getElementById('get_address').value;
+		  
+			  if (name === '' || address === '' || phone === '', email === '', subject === '', message === '')
+			  {
+				alert("please fill all fields", 'danger')
+				return;
+			  }
+		  
+		  
+			  var data = {
+					name,
+					email,
+					phone,
+					subject,
+					message,
+					address
+			  }
+		  
+	
+			  loading.style.display = 'block';
+
+			  fetch('/admin-dashboard/send-contact', {
+				method: 'post',
+				body: JSON.stringify(data),
+				headers: {
+				  'Accept': 'application/json',
+				  'Content-Type': 'application/json',
+				  "Access-Control-Allow-Origin": "/admin-dashboard/send-contact"
+				}
+			  }).then(function (response)
+			  {
+				
+				return response.json();
+			  }).then(function (data)
+			  {
+				
+				if (data)
+				{
+				  loading.style.display = 'none';
+				  showMessage.style.display = 'block';
+
+				  setTimeout(function(){
+					location.reload() 
+				  },1000);
+
+				  
+				}else{
+					showMessage.style.display = 'block';
+					showMessage.textContent = "Email Failed"
+
+					setTimeout(function(){
+					location.reload() 
+				  },1000);
+
+				}
+			  });
+		  
+			}
+		  
+			// class UI
+			// {
+		  
+			//   static showAlert(message, className)
+			//   {
+			// 	const div = document.createElement('div');
+			// 	div.className = `alert alert-${className}`;
+			// 	div.appendChild(document.createTextNode(message));
+			// 	const container = document.querySelector('.dashboard_main_wrapper');
+			// 	const form = document.querySelector('#form');
+			// 	container.insertBefore(div, form);
+		  
+			// 	// Vanish in 3 seconds
+			// 	setTimeout(() => document.querySelector('.alert').remove(), 3000);
+			//   }
+		  
+		  
+			//   static emptyFields()
+			//   {
+			// 	const name = document.getElementById('name').value = '';
+			// 	const address = document.getElementById('address').value = '';
+			// 	const phone = document.getElementById('phone').value = '';
+		  
+			//   }
+		  
+			// }
+		  
+		  
+		  </script>
+
+
+
+
+<%- include('partials/masinfosysfooter'); -%>
